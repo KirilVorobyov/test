@@ -1,1 +1,374 @@
+#include <stdio.h> 
 
+#include <stdlib.h> 
+
+#include <string.h> 
+
+  
+
+typedef struct { 
+
+    char departure_location[50]; 
+
+    char destination_location[50]; 
+
+    int flight_number; 
+
+    char plane_type[50]; 
+
+    int seats_available; 
+
+} Flight; 
+
+  
+
+Flight *flights = NULL; 
+
+int numFlights = 0; 
+
+  
+
+void addFlight(char departure[], char destination[], int flightNumber, char planeType[], int seats) { 
+
+    flights = (Flight *)realloc(flights, (numFlights + 1) * sizeof(Flight)); 
+
+    strcpy(flights[numFlights].departure_location, departure); 
+
+    strcpy(flights[numFlights].destination_location, destination); 
+
+    flights[numFlights].flight_number = flightNumber; 
+
+    strcpy(flights[numFlights].plane_type, planeType); 
+
+    flights[numFlights].seats_available = seats; 
+
+    numFlights++; 
+
+} 
+
+  
+
+void deleteFlight(int flightNumber) { 
+
+    int i, j; 
+
+    for (i = 0; i < numFlights; i++) { 
+
+        if (flights[i].flight_number == flightNumber) { 
+
+            for (j = i; j < numFlights - 1; j++) { 
+
+                flights[j] = flights[j + 1]; 
+
+            } 
+
+            numFlights--; 
+
+            flights = (Flight *)realloc(flights, numFlights * sizeof(Flight)); 
+
+            printf("Flight number %d deleted successfully.\n", flightNumber); 
+
+            return; 
+
+        } 
+
+    } 
+
+    printf("Flight number %d not found.\n", flightNumber); 
+
+} 
+
+  
+
+void displayFlights() { 
+
+    printf("List of flights:\n"); 
+
+    for (int i = 0; i < numFlights; i++) { 
+
+        printf("Flight Number: %d, Departure: %s, Destination: %s, Plane Type: %s, Seats Available: %d\n", 
+
+               flights[i].flight_number, flights[i].departure_location, flights[i].destination_location, 
+
+               flights[i].plane_type, flights[i].seats_available); 
+
+    } 
+
+} 
+
+  
+
+void modifyFlight(int flightNumber) { 
+
+    int i; 
+
+    for (i = 0; i < numFlights; i++) { 
+
+        if (flights[i].flight_number == flightNumber) { 
+
+            printf("Enter new departure location: "); 
+
+            scanf("%s", flights[i].departure_location); 
+
+            printf("Enter new destination location: "); 
+
+            scanf("%s", flights[i].destination_location); 
+
+            printf("Enter new plane type: "); 
+
+            scanf("%s", flights[i].plane_type); 
+
+            printf("Enter new seats available: "); 
+
+            scanf("%d", &flights[i].seats_available); 
+
+            printf("Flight number %d modified successfully.\n", flightNumber); 
+
+            return; 
+
+        } 
+
+    } 
+
+    printf("Flight number %d not found.\n", flightNumber); 
+
+} 
+
+  
+
+void printFlightsToDestination(char destination[]) { 
+
+    printf("Flights to destination %s:\n", destination); 
+
+    for (int i = 0; i < numFlights; i++) { 
+
+        if (strcmp(flights[i].destination_location, destination) == 0) { 
+
+            printf("Flight Number: %d, Plane Type: %s\n", flights[i].flight_number, flights[i].plane_type); 
+
+        } 
+
+    } 
+
+} 
+
+  
+
+void printFlightsByPlaneType(char planeType[]) { 
+
+    printf("Flights with plane type %s:\n", planeType); 
+
+    for (int i = 0; i < numFlights; i++) { 
+
+        if (strcmp(flights[i].plane_type, planeType) == 0) { 
+
+            printf("Flight Number: %d, Departure: %s, Destination: %s\n", 
+
+                   flights[i].flight_number, flights[i].departure_location, flights[i].destination_location); 
+
+        } 
+
+    } 
+
+} 
+
+  
+
+int main() { 
+
+    addFlight("New York", "Los Angeles", 101, "Boeing 737", 150); 
+
+    addFlight("Los Angeles", "Chicago", 102, "Airbus A320", 180); 
+
+    addFlight("Chicago", "Miami", 103, "Boeing 747", 200); 
+
+    addFlight("Miami", "Atlanta", 104, "Boeing 737", 150); 
+
+    addFlight("Atlanta", "Dallas", 105, "Airbus A320", 180); 
+
+    addFlight("Dallas", "Houston", 106, "Boeing 747", 200); 
+
+    addFlight("Houston", "Denver", 107, "Boeing 737", 150); 
+
+    addFlight("Denver", "San Francisco", 108, "Airbus A320", 180); 
+
+    addFlight("San Francisco", "Seattle", 109, "Boeing 747", 200); 
+
+    addFlight("Seattle", "Phoenix", 110, "Boeing 737", 150); 
+
+    addFlight("Phoenix", "Las Vegas", 111, "Airbus A320", 180); 
+
+    addFlight("Las Vegas", "Orlando", 112, "Boeing 747", 200); 
+
+    addFlight("Orlando", "Boston", 113, "Boeing 737", 150); 
+
+    addFlight("Boston", "Washington D.C.", 114, "Airbus A320", 180); 
+
+    addFlight("Washington D.C.", "Philadelphia", 115, "Boeing 747", 200); 
+
+    addFlight("Philadelphia", "San Diego", 116, "Boeing 737", 150); 
+
+    addFlight("San Diego", "Minneapolis", 117, "Airbus A320", 180); 
+
+    addFlight("Minneapolis", "Detroit", 118, "Boeing 747", 200); 
+
+    addFlight("Detroit", "St. Louis", 119, "Boeing 737", 150); 
+
+    addFlight("St. Louis", "Charlotte", 120, "Airbus A320", 180); 
+
+  
+
+    int choice, flightNumber; 
+
+    char destination[50], planeType[50]; 
+
+    while (1) { 
+
+        printf("\n1. Add Flight\n2. Delete Flight\n3. Display Flights\n4. Modify Flight\n5. Print Flights to Destination\n6. Print Flights by Plane Type\n7. Exit\n"); 
+
+        printf("Enter your choice: "); 
+
+        scanf("%d", &choice); 
+
+        switch (choice) { 
+
+            case 1: 
+
+                printf("Enter departure location: "); 
+
+                scanf("%s", destination); 
+
+                printf("Enter destination location: "); 
+
+                scanf("%s", planeType); 
+
+                printf("Enter flight number: "); 
+
+                scanf("%d", &flightNumber); 
+
+                printf("Enter plane type: "); 
+
+                scanf("%s", planeType); 
+
+                printf("Enter seats available: "); 
+
+                scanf("%d", &flightNumber); 
+
+                addFlight(destination, planeType, flightNumber, planeType, flightNumber); 
+
+                break; 
+
+            case 2: 
+
+                printf("Enter flight number to delete: "); 
+
+                scanf("%d", &flightNumber); 
+
+                
+
+  
+
+  
+
+                deleteFlight(flightNumber);  
+
+  
+
+                break;  
+
+  
+
+            case 3:  
+
+  
+
+                displayFlights();  
+
+  
+
+                break;  
+
+  
+
+            case 4:  
+
+  
+
+                printf("Enter flight number to modify: ");  
+
+  
+
+                scanf("%d", &flightNumber);  
+
+  
+
+                modifyFlight(flightNumber);  
+
+  
+
+                break;  
+
+  
+
+            case 5:  
+
+  
+
+                printf("Enter destination: ");  
+
+  
+
+                scanf("%s", destination);  
+
+  
+
+                printFlightsToDestination(destination);  
+
+  
+
+                break;  
+
+  
+
+            case 6:  
+
+  
+
+                printf("Enter plane type: ");  
+
+  
+
+                scanf("%s", planeType);  
+
+  
+
+                printFlightsByPlaneType(planeType);  
+
+  
+
+                break;  
+
+  
+
+            case 7:  
+
+  
+
+                free(flights);  
+
+
+                return 0;  
+
+
+            default:  
+
+
+                printf("Invalid choice. Please try again.\n");  
+
+
+
+        }  
+
+  
+
+    }  
